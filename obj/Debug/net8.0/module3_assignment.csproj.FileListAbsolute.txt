@@ -1,0 +1,15 @@
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.AssemblyInfoInputs.cache
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.AssemblyInfo.cs
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.csproj.CoreCompileInputs.cache
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.sourcelink.json
+C:\Users\Benjamin\programming\module3_assignment\bin\Debug\net8.0\module3_assignment.exe
+C:\Users\Benjamin\programming\module3_assignment\bin\Debug\net8.0\module3_assignment.deps.json
+C:\Users\Benjamin\programming\module3_assignment\bin\Debug\net8.0\module3_assignment.runtimeconfig.json
+C:\Users\Benjamin\programming\module3_assignment\bin\Debug\net8.0\module3_assignment.dll
+C:\Users\Benjamin\programming\module3_assignment\bin\Debug\net8.0\module3_assignment.pdb
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.dll
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\refint\module3_assignment.dll
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.pdb
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\module3_assignment.genruntimeconfig.cache
+C:\Users\Benjamin\programming\module3_assignment\obj\Debug\net8.0\ref\module3_assignment.dll
