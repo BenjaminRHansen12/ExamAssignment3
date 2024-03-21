@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-//Task : Functions are a popping
+//Task : Functions are a popping-----------------------------------------------
 //Square of a number
 int squareOfNumber = 20;
 int squareOfNumberTest = SquareOfANumber(squareOfNumber);
@@ -74,7 +74,7 @@ static string GreetingSomeone(string name)
 }
 
 
-//Task : Flatten those numbers
+//Task : Flatten those numbers -------------------------------------------------
 int[] integersArray = GetIntegersArray("arrays.json");
 
 Console.Write("Array of numbers: [");
@@ -114,11 +114,309 @@ static void ExtractIntegers(JsonElement jsonElement, List<int> integers)
     }
 }
 
+PrintLine();
 
-//Task : Left and right up and down, away we go.
+//Task : Left and right up and down, away we go.---------------------------------
 
 
 
 
-//Task : My books they are a mess.
+//Task : My books they are a mess.-----------------------------------------------
+string allTheBooks = File.ReadAllText("books.json");
+JsonDocument jsonDocument = JsonDocument.Parse(allTheBooks);
+List<Book> books = ExtractBooks(jsonDocument.RootElement);
+
+//Return only books starting with 'The'
+List<Book> theBooks = FindingBookStartingWithThe(books);
+Console.WriteLine("Books starting with 'The':");
+foreach (Book book in theBooks)
+{
+    Console.WriteLine($"{book.Title} ({book.PublicationYear}), by {book.Author}, ISBN: {book.ISBN}");
+}
+
+static List<Book> FindingBookStartingWithThe(List<Book> books)
+{
+    List<Book> theBooks = new List<Book>();
+
+    foreach (Book book in books)
+    {
+        if (book.Title.StartsWith("The", StringComparison.OrdinalIgnoreCase))
+        {
+            theBooks.Add(book);
+        }
+    }
+
+    return theBooks;
+}
+PrintLine();
+
+//Return only books written by authors with a 't' in their name
+List<Book> tInAuthors = FindingBooksWithAuthorTInName(books);
+Console.WriteLine("Books written by authors with 't' in their name:");
+foreach (Book book in tInAuthors)
+{
+    Console.WriteLine($"{book.Title} ({book.PublicationYear}), by {book.Author}, ISBN: {book.ISBN}");
+}
+
+static List<Book> FindingBooksWithAuthorTInName(List<Book> books)
+{
+    List<Book> tInAuthors = new List<Book>();
+
+    foreach (Book book in books)
+    {
+        string authorName = book.Author;
+
+        if (!authorName.Contains("translated by", StringComparison.OrdinalIgnoreCase))
+        {
+            int indexOfOpenParenthesis = authorName.IndexOf('(');
+
+            if (indexOfOpenParenthesis != -1)
+            {
+                authorName = authorName.Substring(0, indexOfOpenParenthesis).Trim();
+            }
+
+            if (authorName.Contains("t", StringComparison.OrdinalIgnoreCase))
+            {
+                tInAuthors.Add(book);
+            }
+        }
+    }
+
+    return tInAuthors;
+}
+PrintLine();
+
+//The number of books written after '1992'
+int booksWrittenAfter1992 = CountTheBooksAfter1992(books, 1992);
+Console.WriteLine($"The number of book written after 1992: {booksWrittenAfter1992}");
+
+static int CountTheBooksAfter1992(List<Book> books, int year)
+{
+    int count = 0;
+    foreach (Book book in books)
+    {
+        if(book.PublicationYear > year)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+PrintLine();
+
+//The number of books written before '2004'
+int booksWrittenBefore2004 = CountTheBooksBefore2004(books, 2004);
+Console.WriteLine($"The number of book written before 2004: {booksWrittenBefore2004}");
+
+static int CountTheBooksBefore2004(List<Book> books, int year)
+{
+    int count = 0;
+    foreach (Book book in books)
+    {
+        if(book.PublicationYear < year)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+PrintLine();
+
+//Return the isbn number of all the books for a given author
+List<Book> isbnOfTerryPratchett = TheIsbnOfTerryPratchett(books);
+Console.WriteLine("The isbn of all Terry Pratchett books:");
+foreach (Book book in isbnOfTerryPratchett)
+{
+    Console.WriteLine($"ISBN: {book.ISBN}");
+}
+
+static List<Book> TheIsbnOfTerryPratchett(List<Book> books)
+{
+    List<Book> isbnOfTerryPratchett = new List<Book>();
+
+    foreach (Book book in books)
+    {
+        if (book.Author.Contains("Terry Pratchett", StringComparison.OrdinalIgnoreCase))
+        {
+            isbnOfTerryPratchett.Add(book);
+        }
+    }
+
+    return isbnOfTerryPratchett;
+}
+PrintLine();
+
+//List books alphabetically assending
+Console.WriteLine("Books sorted by title in ascending order:");
+PrintBooks(SortBooksByTitle(books, true));
+
+static List<Book> SortBooksByTitle(List<Book> books, bool ascending)
+{
+    Comparison<Book> comparer = (book1, book2) => String.Compare(book1.Title, book2.Title);
+        
+    if (!ascending)
+        comparer = (book1, book2) => String.Compare(book2.Title, book1.Title);
+
+    books.Sort(comparer);
+    return books;
+}
+
+static void PrintBooks(List<Book> books)
+{
+    foreach (var book in books)
+    {
+        Console.WriteLine($"{book.Title} ({book.PublicationYear}), by {book.Author}, ISBN: {book.ISBN}");
+    }
+}
+PrintLine();
+
+//List books chronologically assending
+Console.WriteLine("Books sorted by publication year ascending order:");
+SortBooksByPublicationYearAscending(books);
+
+foreach (Book book in books)
+{
+    Console.WriteLine($"{book.Title} ({book.PublicationYear}), by {book.Author}, ISBN: {book.ISBN}");
+}
+
+static void SortBooksByPublicationYearAscending(List<Book> books)
+{
+    books.Sort((book1, book2) => book1.PublicationYear.CompareTo(book2.PublicationYear));
+}
+PrintLine();
+
+//list books grouped by author last name
+Console.WriteLine("Books grouped by author last name:");
+PrintBooksGroupedByAuthorLastName(GroupBooksByAuthorLastName(books));
+
+static Dictionary<string, List<Book>> GroupBooksByAuthorLastName(List<Book> books)
+{
+    Dictionary<string, List<Book>> groupedBooks = new Dictionary<string, List<Book>>();
+    foreach (var book in books)
+    {
+        string authorLastName = GetAuthorLastName(book.Author);
+        if (!groupedBooks.ContainsKey(authorLastName))
+        {
+            groupedBooks[authorLastName] = new List<Book>();
+        }
+        groupedBooks[authorLastName].Add(book);
+    }
+    return groupedBooks;
+}
+
+static string GetAuthorLastName(string author)
+{
+    int bracketIndex = author.IndexOf('(');
+    if (bracketIndex != -1)
+    {
+        author = author.Substring(0, bracketIndex).Trim();
+    }
+    string[] authorNameParts = author.Split(' ');
+    return authorNameParts[authorNameParts.Length - 1];
+}
+
+static void PrintBooksGroupedByAuthorLastName(Dictionary<string, List<Book>> groupedBooks)
+{
+    foreach (var authorGroup in groupedBooks)
+    {
+        Console.WriteLine($"Author: {authorGroup.Key}");
+        foreach (var book in authorGroup.Value)
+        {
+            Console.WriteLine($"{book.Title} ({book.PublicationYear}), ISBN: {book.ISBN}");
+        }
+        Console.WriteLine();
+    }
+}
+PrintLine();
+
+//List books grouped by author first name
+Console.WriteLine("Books grouped by author first name:");
+Dictionary<string, List<Book>> groupedBooks = GroupBooksByAuthorFirstName(books);
+PrintGroupedBooks(groupedBooks);
+    
+static Dictionary<string, List<Book>> GroupBooksByAuthorFirstName(List<Book> books)
+{
+    Dictionary<string, List<Book>> groupedBooks = new Dictionary<string, List<Book>>();
+
+    foreach (var book in books)
+    {
+    string firstName = GetAuthorFirstName(book.Author);
+        if (!groupedBooks.ContainsKey(firstName))
+        {
+            groupedBooks[firstName] = new List<Book>();
+        }
+        groupedBooks[firstName].Add(book);
+    }
+
+    return groupedBooks;
+}
+
+static string GetAuthorFirstName(string author)
+{
+    string[] parts = author.Split(' ');
+    return parts[0];
+}
+
+static void PrintGroupedBooks(Dictionary<string, List<Book>> groupedBooks)
+{
+    foreach (var group in groupedBooks)
+    {
+        Console.WriteLine($"Authors first name \"{group.Key}\":");
+        foreach (var book in group.Value)
+        {
+            Console.WriteLine($"{book.Title} ({book.PublicationYear}), by {book.Author}, ISBN: {book.ISBN}");
+        }
+        Console.WriteLine();
+    }
+}
+
+//Book extractor
+static List<Book> ExtractBooks(JsonElement jsonElement)
+{
+    List<Book> books = new List<Book>();
+
+    if (jsonElement.ValueKind == JsonValueKind.Array)
+    {
+        foreach (JsonElement arrayElement in jsonElement.EnumerateArray())
+        {
+            string title = arrayElement.GetProperty("title").GetString();
+            int publicationYear = arrayElement.GetProperty("publication_year").GetInt32();
+            string author = arrayElement.GetProperty("author").GetString();
+            string isbn = arrayElement.GetProperty("isbn").GetString();
+
+            Book book = new Book(title, publicationYear, author, isbn);
+            books.Add(book);
+        }
+    }
+
+    return books;
+}
+
+static void PrintLine()
+{
+    const int length = 100;
+    for (int i = 0; i < length; i++)
+    {
+        Console.Write('-');
+    }
+    Console.WriteLine();
+}
+
+public class Book
+{
+    public string Title { get; }
+    public int PublicationYear { get; }
+    public string Author { get; }
+    public string ISBN { get; }
+
+    public Book(string title, int publicationYear, string author, string isbn)
+    {
+        Title = title;
+        PublicationYear = publicationYear;
+        Author = author;
+        ISBN = isbn;
+    }
+}
 
