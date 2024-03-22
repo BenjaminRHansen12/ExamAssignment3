@@ -72,7 +72,7 @@ static string GreetingSomeone(string name)
 {
     return $"Greetings, {name}";
 }
-
+PrintLine();
 
 //Task : Flatten those numbers -------------------------------------------------
 int[] integersArray = GetIntegersArray("arrays.json");
@@ -113,18 +113,94 @@ static void ExtractIntegers(JsonElement jsonElement, List<int> integers)
         }
     }
 }
-
 PrintLine();
 
 //Task : Left and right up and down, away we go.---------------------------------
+//Calculate the sum of the full structure
+string jsonNodes = File.ReadAllText("nodes.json");
+JsonElement jsonElement = JsonDocument.Parse(jsonNodes).RootElement;
 
+int sumOfTheCalculatedStructure = CalculateSumOfTheStructure(jsonElement);
+Console.WriteLine($"Sum of values on the nodes structure: {sumOfTheCalculatedStructure}");
+    
+static int CalculateSumOfTheStructure(JsonElement node)
+{
+    if (node.ValueKind == JsonValueKind.Null)
+    {
+        return 0;
+    }
 
+    int value = node.GetProperty("value").GetInt32();
 
+    JsonElement left = node.GetProperty("left");
+    JsonElement right = node.GetProperty("right");
+    int leftSum = CalculateSumOfTheStructure(left);
+    int rightSum = CalculateSumOfTheStructure(right);
+
+    return value + leftSum + rightSum;
+}
+
+//Report the deepest level of the structure
+int deepestLevel = CalculateDeepestLevel(jsonElement);
+Console.WriteLine($"Deepest level of the nodes structure: {deepestLevel}");
+
+static int CalculateDeepestLevel(JsonElement node)
+{
+    if (node.ValueKind == JsonValueKind.Null)
+    {
+        return 0;
+    }
+
+    int leftLevel = CalculateDeepestLevel(node.GetProperty("left"));
+    int rightLevel = CalculateDeepestLevel(node.GetProperty("right"));
+
+    if (leftLevel > rightLevel)
+    {
+        return leftLevel + 1;
+    }
+    else
+    {
+        return rightLevel + 1;
+    }
+}
+
+//Report the numbers nodes
+JsonElement firstNode = JsonDocument.Parse(jsonNodes).RootElement;
+int nodeCount = CountTheAmountOfNodes(firstNode);
+Console.WriteLine($"The number of nodes are: {nodeCount}");
+    
+static int CountTheAmountOfNodes(JsonElement jsonElement)
+{
+    if (jsonElement.ValueKind == JsonValueKind.Null || jsonElement.ValueKind != JsonValueKind.Object && jsonElement.ValueKind != JsonValueKind.Array)
+    {
+        return 0;
+    }
+
+    int countOfNodes = 1; 
+    
+    if (jsonElement.ValueKind == JsonValueKind.Object)
+    {
+        foreach (JsonProperty property in jsonElement.EnumerateObject())
+        {
+            countOfNodes += CountTheAmountOfNodes(property.Value);
+        }
+    }
+    else if (jsonElement.ValueKind == JsonValueKind.Array)
+    {
+        foreach (JsonElement element in jsonElement.EnumerateArray())
+        {
+            countOfNodes += CountTheAmountOfNodes(element);
+        }
+    }
+
+    return countOfNodes;
+}
+PrintLine();
 
 //Task : My books they are a mess.-----------------------------------------------
 string allTheBooks = File.ReadAllText("books.json");
-JsonDocument jsonDocument = JsonDocument.Parse(allTheBooks);
-List<Book> books = ExtractBooks(jsonDocument.RootElement);
+JsonDocument jsonDocumentBooks = JsonDocument.Parse(allTheBooks);
+List<Book> books = ExtractBooks(jsonDocumentBooks.RootElement);
 
 //Return only books starting with 'The'
 List<Book> theBooks = FindingBookStartingWithThe(books);
@@ -257,7 +333,9 @@ static List<Book> SortBooksByTitle(List<Book> books, bool ascending)
     Comparison<Book> comparer = (book1, book2) => String.Compare(book1.Title, book2.Title);
         
     if (!ascending)
+    {
         comparer = (book1, book2) => String.Compare(book2.Title, book1.Title);
+    }
 
     books.Sort(comparer);
     return books;
